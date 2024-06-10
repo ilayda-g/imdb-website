@@ -1,0 +1,18 @@
+.navbar-nav .nav-link,
+.navbar-brand,
+.menu-text {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+.input-group-prepend {
+    background-color: #ffffff;
+}
+.input-group-prepend .btn {
+    color: #000000;
+    font-weight: bold;
+}
+.navbar-collapse .btn {
+    font-weight: bold;
+}
+
+

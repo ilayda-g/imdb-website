@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .navbar, .card {
+            background-color: #1f1f1f;
+            border: none;
+        }
+
+        .card-title {
+            color: #ffcc00;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .card-text {
+            color: #ffffff;
+        }
+
+        .rate {
+            display: flex;
+            align-items: center;
+        }
+
+        .rate .star {
+            color: #ffcc00;
+            margin-right: 5px;
+        }
+
+        a, a:hover, a:focus, a:active {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        img, iframe {
+            border-radius: 5px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .card .col-4, .card .col-8 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+    </style>
+    <title>Movie Details</title>
+</head>
+<body>
+    <%- include("partials/nav") %>
+    
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-3">
+                    <div class="row no-gutters">
+                        <div class="col-4">
+                            <img src="<%= urun.movie_image %>" alt="<%= urun.movie_name %>" class="img-fluid">
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= urun.movie_name %></h5>
+                                <p class="rate">
+                                    <span class="star">★</span>
+                                    <span class="card-text"><%= urun.movie_rate %></span>
+                                </p>
+                                <p class="card-text"><%= urun.movie_description %></p>
+                                <p class="card-text"><%= urun.movie_year %></p>
+                                <p class="card-text"><%= urun.movie_actors %></p>
+                                <div class="video-wrapper mt-3">
+                                    <iframe src="<%= urun.movie_trailer.replace('watch?v=', 'embed/') %>" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Navbar</title>
+    <style>
+        .suggestions-header {
+            background-color: #343a40;
+            color: black;
+            font-weight: bold;
+            padding: 10px;
+            margin: 0;
+            border-bottom: 1px solid #444;
+        }
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: black;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+        }
+        .suggestion-item img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+        #suggestions {
+            display: none;
+            background-color: white;
+            border: 1px solid #ccc;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 9999; /* Ensure it appears above other elements */
+            position: absolute; /* Position the suggestions absolutely */
+            top: 100%; /* Position the suggestions right below the search bar */
+            left: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">
+            <img src="/images/logo.png" height="50">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <span class="menu-text">MENU</span>
+
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <form class="d-flex mx-auto position-relative" style="width: 700px;" action="/search" method="GET">
+                <div class="input-group" style="width: 100%;">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="searchDropdown">All</button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" onclick="setCategory('All')">All</a>
+                            <a class="dropdown-item" href="#" onclick="setCategory('Celebs')">Celebs</a>
+                            <a class="dropdown-item" href="#" onclick="setCategory('Titles')">Titles</a>
+                            <a class="dropdown-item" href="#" onclick="setCategory('Summaries')">Summaries</a>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="searchDropdown" id="searchInput" name="query">
+                    <input type="hidden" id="categoryInput" name="category" value="All">
+                </div>
+                <ul id="suggestions" class="list-group w-100"></ul>
+            </form>
+
+            <div class="d-flex align-items-center">
+                <img src="/images/prologo.png" height="50" class="pro-image mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="26" fill="#ffffff" class="bi bi-bookmark-plus-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5z"/>
+                </svg>
+                <button class="btn" style="background-color: #121212; color: #ffffff; border: none;">Watchlist</button>
+            </div>
+
+            <ul class="navbar-nav ml-auto">
+                <li class="item">
+                    <span class="nav-link" id="userDisplay" style="cursor: pointer;"></span>
+                </li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Language
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="languageDropdown">
+                        <a class="dropdown-item" href="#" onclick="changeLanguage('en')">EN</a>
+                        <a class="dropdown-item" href="#" onclick="changeLanguage('tr')">TR</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <script>
+        function setCategory(category) {
+            document.getElementById('searchDropdown').innerText = category;
+            document.getElementById('categoryInput').value = category;
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserSignIn();
+        });
+
+        function checkUserSignIn() {
+            fetch('/check-session')
+                .then(response => response.json())
+                .then(data => {
+                    const userDisplayElement = document.getElementById('userDisplay');
+                    if (data.isLoggedIn) {
+                        userDisplayElement.textContent = data.user.name;
+                    } else {
+                        userDisplayElement.textContent = "Giriş Yap";
+                        userDisplayElement.addEventListener('click', function() {
+                            window.location.href = "/login";
+                        });
+                    }
+                })
+                .catch(error => console.error('Kullanıcı oturumunu kontrol ederken hata oluştu:', error));
+        }
+
+        var searchCategory = 'All';
+
+        function changeSearchCategory(category) {
+            searchCategory = category;
+            document.getElementById('searchDropdown').innerText = category;
+        }
+
+        function changeLanguage(language) {
+            document.cookie = `language=${language}; path=/`;
+            location.reload();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            var query = this.value;
+            if (query.length >= 3) {
+                fetchSuggestions(query);
+            } else {
+                document.getElementById('suggestions').style.display = 'none'; // Hide suggestions if query length is less than 3
+            }
+        });
+
+        function fetchSuggestions(query) {
+            const category = document.getElementById('categoryInput').value;
+            fetch(`/autocomplete?query=${query}&category=${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    var suggestionsList = document.getElementById('suggestions');
+                    suggestionsList.innerHTML = ''; // Clear current suggestions
+
+                    data.forEach(suggestion => {
+                        var suggestionItem = document.createElement('li');
+                        suggestionItem.className = 'list-group-item suggestion-item';
+                        var titleOrYear = suggestion.title ? suggestion.title : suggestion.year;
+                        var actor = suggestion.actor ? suggestion.actor : '';
+                        suggestionItem.innerHTML = `
+                            <a href="${suggestion.url}" style="display: flex; align-items: center;">
+                                <img src="${suggestion.image}" alt="${suggestion.name}" style="width: 50px; height: auto; margin-right: 10px;">
+                                <div>
+                                    <h6>${suggestion.name}</h6>
+                                    <p>${titleOrYear}</p>
+                                    <p>${actor}</p>
+                                </div>
+                            </a>`;
+                        suggestionItem.addEventListener('click', function() {
+                            window.location.replace(suggestion.url);
+                        });
+                        suggestionsList.appendChild(suggestionItem); // Add suggestion to list
+                    });
+
+                    suggestionsList.style.display = 'block'; // Show suggestions
+                })
+                .catch(error => console.error('Error fetching suggestions:', error));
+        }
+    </script>
+</body>
+</html>

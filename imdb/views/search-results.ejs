@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/search.css">
+    <style>
+        body {
+            background-color: #212529;
+            color: #fff; /* Beyaz metin rengi */
+        }
+        .list-group-item {
+            background-color: #343a40;
+            border-color: #343a40;
+            margin-bottom: 10px; /* Her listeleme öğesi arasında boşluk bırakır */
+            display: flex; /* İçerikleri yatay hizalama */
+            align-items: center; /* Öğeleri dikey olarak hizalar */
+        }
+        .list-group-item:hover {
+            background-color: #495057;
+        }
+        .list-group-item h5,
+        .list-group-item p {
+            margin-bottom: 0; /* Başlık ve açıklama arasında ekstra boşluk bırakmaz */
+            color: #fff; /* Beyaz metin rengi */
+        }
+        .img-fluid {
+            width: 100px;
+            height: auto;
+            margin-right: 20px; /* Fotoğraf ile diğer bilgiler arasında boşluk bırakır */
+        }
+        h1, h2 {
+            color: #fff; /* Beyaz başlık rengi */
+        }
+    </style>
+    <title>Search Results</title>
+</head>
+<body>
+    <%- include('partials/nav') %>
+
+    <div class="container mt-5">
+        <% if (results.length > 0) { %>
+            <br> 
+            <% if (category === "Celebs") { %>
+                <h1>Search Results for "<%= query %>"</h1>
+                <h2>People</h2>
+                <div class="list-group">
+                    <% results.forEach(result => { %>
+                        <a href="/celebs/<%= result.people_id %>" class="list-group-item list-group-item-action">
+                            <img src="<%= result.people_image %>" alt="<%= result.people_name %>" class="img-fluid">
+                            <div>
+                                <h5 class="mb-1 people-name"><%= result.people_name %></h5>
+                                <p class="mb-1">a.k.a. <%= result.people_aka %></p>
+                            </div>
+                        </a>
+                    <% }) %>
+                </div>
+            <% } else if (category === "Summaries") { %>
+                <h1>Search Results for "<%= query %>"</h1>
+                <h2>Summaries</h2>
+                <div class="list-group">
+                    <% results.forEach(result => { %>
+                        <a href="/products/<%= result.movie_id %>" class="list-group-item list-group-item-action">
+                            <img src="<%= result.movie_image %>" alt="<%= result.movie_name %>" class="img-fluid">
+                            <div>
+                                <h5 class="mb-1 movie-name"><%= result.movie_name %></h5>
+                                <p class="mb-1"><%= result.movie_description %></p>
+                            </div>
+                        </a>
+                    <% }) %>
+                </div>
+            <% } else if (category === "All") { %>
+                <h1>Search Results for "<%= query %>"</h1>
+                <% if (results.some(result => result.type === 'product')) { %>
+                    <h2>Titles</h2>
+                    <div class="list-group">
+                        <% results.filter(result => result.type === 'product').forEach(result => { %>
+                            <a href="/products/<%= result.movie_id %>" class="list-group-item list-group-item-action">
+                                <img src="<%= result.movie_image %>" alt="<%= result.movie_name %>"class="img-fluid">
+                                <div>
+                                    <h5 class="mb-1 movie-name"><%= result.movie_name %></h5>
+                                    <p class="mb-1"><%= result.movie_year %></p>
+                                    <p class="mb-1"><%= result.movie_actors %></p>
+                                </div>
+                            </a>
+                        <% }) %>
+                    </div>
+                <% } %>
+                <% if (results.some(result => result.type === 'person')) { %>
+                    <h2>People</h2>
+                    <div class="list-group">
+                        <% results.filter(result => result.type === 'person').forEach(result => { %>
+                            <a href="/celebs/<%= result.people_id %>" class="list-group-item list-group-item-action">
+                                <img src="<%= result.people_image %>" alt="<%= result.people_name %>" class="img-fluid">
+                                <div>
+                                    <h5 class="mb-1 people-name"><%= result.people_name %></h5>
+                                    <p class="mb-1">a.k.a. <%= result.people_aka %></p>
+                                </div>
+                            </a>
+                        <% }) %>
+                    </div>
+                <% } %>
+                
+            <% } else if (category === "Titles") { %>
+                <h1>Search Results for "<%= query %>"</h1>
+                <h2>Titles</h2>
+                <div class="list-group">
+                    <% results.forEach(result => { %>
+                        <a href="/products/<%= result.movieid %>" class="list-group-item list-group-item-action">
+                            <img src="/images/<%= result.movie_image %>" alt="<%= result.movie_name %>" class="img-fluid">
+                            <div>
+                                <h5 class="mb-1 movie-name"><%= result.movie_name %></h5>
+                                <p class="mb-1"><%= result.movie_year %></p>
+                                <p class="mb-1"><%= result.movie_actors %></p>
+                            </div>
+                        </a>
+                    <% }) %>
+                </div>
+            <% } %>
+        <% } else { %>
+            <p>No results found</p>
+        <% } %>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

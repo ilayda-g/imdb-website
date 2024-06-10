@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Register</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212; /* Koyu arkaplan rengi */
+            color: #ffffff; /* Beyaz metin rengi */
+        }
+        .form-group label {
+            color: #ffffff; /* Form etiketlerinin metin rengi */
+        }
+        .form-control {
+            background-color: #333333; /* Form alanlarının koyu iç rengi */
+            color: #ffffff; /* Form metin rengi */
+            border: 1px solid #444444; /* Form kenarlık rengi */
+        }
+        .form-control::placeholder {
+            color: #bbbbbb; /* Placeholder metin rengi */
+        }
+        .btn-primary {
+            background-color: #007bff; /* Ana renk */
+            border-color: #007bff; /* Kenarlık rengi */
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Ana renk hover durumunda */
+            border-color: #0056b3; /* Kenarlık rengi hover durumunda */
+        }
+        .register-login {
+            color: #ffffff; /* Giriş yap bağlantısının metin rengi */
+        }
+        .register-link {
+            color: #007bff; /* Giriş yap bağlantısının metin rengi */
+            text-decoration: none; /* Alt çizgiyi kaldır */
+        }
+        .register-link:hover {
+            color: #0056b3; /* Giriş yap bağlantısının hover durumunda metin rengi */
+        }
+    </style>
+</head>
+<body>
+    <%- include("partials/nav") %>
+
+    <div class="container mt-5">
+        <h2>Register</h2>
+        <form action="/register" method="POST">
+            <div class="form-group">
+                <label for="reg_name">Name</label>
+                <input type="text" class="form-control" id="reg_name" name="reg_name" required>
+            </div>
+            <div class="form-group">
+                <label for="reg_surname">Surname</label>
+                <input type="text" class="form-control" id="reg_surname" name="reg_surname" required>
+            </div>
+            <div class="form-group">
+                <label for="reg_email">Email address</label>
+                <input type="email" class="form-control" id="reg_email" name="reg_email" required>
+            </div>
+            <div class="form-group">
+                <label for="reg_password">Password</label>
+                <input type="password" class="form-control" id="reg_password" name="reg_password" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$" required>
+                <small id="passwordHelp" class="form-text text-muted">Password must contain at least 8 characters, including 1 number and 1 special character.</small>
+            </div>
+            <div class="form-group">
+                <label for="reg_country">Country</label>
+                <select class="form-control" id="reg_country" name="reg_country" required>
+                    <option value="" disabled selected>Select your country</option>
+                    <option value="USA">USA</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="UK">UK</option>
+                    <option value="France">France</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="reg_city">City</label>
+                <select class="form-control" id="reg_city" name="reg_city" required>
+                    <option value="" disabled selected>Select your city</option>
+                    <option value="Ankara">Ankara</option>
+                    <option value="Izmir">Izmir</option>
+                    <option value="Istanbul">Istanbul</option>
+                    <option value="Eskisehir">Eskisehir</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+            <div class="register-login">
+                <p> 
+                    If you are registered click this link.
+                    <a href="/login" class="register-link">Log in </a>
+                </p>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
